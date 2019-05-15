@@ -61,14 +61,12 @@ public class Employee implements Comparable<Employee> {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "EmpID: " + this.empID + "| ProjID: " + this.projectID + "| Start: " + this.startDate + "| End: "
 				+ this.endDate + "| Work Days: " + this.workDays;
 	}
 
 	@Override
 	public int compareTo(Employee o) {
-		// TODO Auto-generated method stub
 		return this.startDate.compareTo(o.startDate);
 	}
 
