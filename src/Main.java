@@ -5,14 +5,13 @@ import java.util.*;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-
 public class Main {
 
 	public static void main(String[] args) {
 
 		HashMap<Integer, HashSet<Employee>> employeeMap = new HashMap<>();
 		long maxValue = 0;
-		
+
 		String data = readData();
 
 		if (!data.isEmpty()) {
@@ -28,7 +27,7 @@ public class Main {
 			} catch (NoSuchElementException e) {
 				System.out.println("It seems that there are no teams working on common projects");
 			}
-			
+
 			for (Map.Entry<String, Long> employees : result.entrySet()) {
 				if (employees.getValue() == maxValue) {
 					String[] empIDs = employees.getKey().split("-");
@@ -38,28 +37,30 @@ public class Main {
 					System.out.println("Together they have " + maxValue + " work days by common projects.");
 				}
 			}
+		} else {
+			System.out.println("The selected file is empty.");
 		}
 	}
 
 	/**
-	 * Opens a dialog for choosing a text file and 
-	 * returns a String with all of the data from the chosen file .</br>
+	 * Opens a dialog for choosing a text file and returns a String with all of the
+	 * data from the chosen file .</br>
 	 * </br>
 	 * Example of valid data contained in the file:</br>
-     * 143, 12, 2013-11-01, 2014-01-05</br>
-     * 218, 10, 2012-05-16, NULL = today</br>
-     * 
+	 * 143, 12, 2013-11-01, 2014-01-05</br>
+	 * 218, 10, 2012-05-16, NULL = today</br>
+	 * 
 	 * @return String
 	 */
 
 	private static String readData() {
 		JFileChooser fileChooser = new JFileChooser();
-	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files only", "txt");
-	    fileChooser.setAcceptAllFileFilterUsed(false);
-	    fileChooser.setFileFilter(filter);
-	    fileChooser.setDialogTitle("Please choose a text file");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files only", "txt");
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setFileFilter(filter);
+		fileChooser.setDialogTitle("Please choose a text file");
 		String data = "";
-		
+
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			StringBuilder sb = new StringBuilder();
 			File employeesData = fileChooser.getSelectedFile();
@@ -93,6 +94,10 @@ public class Main {
 
 		for (int i = 0; i < arr.length; i++) {
 			row = arr[i].split(", ");
+
+			if (row[0].isEmpty()) { // check for empty line
+				continue;
+			}
 
 			if (row.length == 4) {
 
