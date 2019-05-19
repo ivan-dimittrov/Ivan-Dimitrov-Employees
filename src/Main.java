@@ -2,21 +2,18 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-//EmpID, ProjectID, DateFrom, DateTo
-//143, 12, 2013-11-01, 2014-01-05
-//218, 10, 2012-05-16, NULL = today
-//143, 10, 2009-01-01, 2011-04-27
 
 public class Main {
-
-	public static final String EMPLOYEES_DATA_PATH = "Employees Data/Data-employees.txt";
 
 	public static void main(String[] args) {
 
 		HashMap<Integer, HashSet<Employee>> employeeMap = new HashMap<>();
-		String data = readData(EMPLOYEES_DATA_PATH);
 		long maxValue = 0;
+		
+		String data = readData();
 
 		if (!data.isEmpty()) {
 
@@ -31,7 +28,7 @@ public class Main {
 			} catch (NoSuchElementException e) {
 				System.out.println("It seems that there are no teams working on common projects");
 			}
-
+			
 			for (Map.Entry<String, Long> employees : result.entrySet()) {
 				if (employees.getValue() == maxValue) {
 					String[] empIDs = employees.getKey().split("-");
@@ -45,30 +42,39 @@ public class Main {
 	}
 
 	/**
-	 * Returns a String with all of the data from a text file .
-	 * 
-	 * @param Location of the file
+	 * Opens a dialog for choosing a text file and 
+	 * returns a String with all of the data from the chosen file .</br>
+	 * </br>
+	 * Example of valid data contained in the file:</br>
+     * 143, 12, 2013-11-01, 2014-01-05</br>
+     * 218, 10, 2012-05-16, NULL = today</br>
+     * 
 	 * @return String
 	 */
 
-	private static String readData(String filePath) {
+	private static String readData() {
+		JFileChooser fileChooser = new JFileChooser();
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files only", "txt");
+	    fileChooser.setAcceptAllFileFilterUsed(false);
+	    fileChooser.setFileFilter(filter);
+	    fileChooser.setDialogTitle("Please choose a text file");
 		String data = "";
-		StringBuilder sb = new StringBuilder();
-		File employeesData = new File(filePath);
+		
+		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			StringBuilder sb = new StringBuilder();
+			File employeesData = fileChooser.getSelectedFile();
 
-		try (Scanner sc = new Scanner(employeesData)) {
-			while (sc.hasNextLine()) {
-				sb.append(sc.nextLine() + "\n");
+			try (Scanner sc = new Scanner(employeesData)) {
+				while (sc.hasNextLine()) {
+					sb.append(sc.nextLine() + "\n");
+				}
+			} catch (FileNotFoundException e) {
+				System.out.println("Employee file missing.");
 			}
-		} catch (FileNotFoundException e) {
-			System.out.println("Employee file missing. "
-					+ "\nPlease paste Data-employees.txt file in the Employees Data directory.");
+
+			data = sb.toString();
 		}
-
-		data = sb.toString();
-
 		return data;
-
 	}
 
 	/**
@@ -106,7 +112,7 @@ public class Main {
 						throw new Exception();
 					}
 
-					long daysBetween = ChronoUnit.DAYS.between(dateFrom, endDate);
+					long daysBetween = ChronoUnit.DAYS.between(dateFrom, endDate) + 1;
 					Employee employee = new Employee(employeeID, projectID, dateFrom, endDate, daysBetween);
 
 					if (!map.containsKey(projectID)) {
