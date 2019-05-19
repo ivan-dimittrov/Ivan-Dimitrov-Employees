@@ -38,7 +38,7 @@ public class Main {
 				}
 			}
 		} else {
-			System.out.println("The selected file is empty.");
+			System.out.println("The selected file is empty or you didn't select a file");
 		}
 	}
 
@@ -95,7 +95,7 @@ public class Main {
 		for (int i = 0; i < arr.length; i++) {
 			row = arr[i].split(", ");
 
-			if (row[0].isEmpty()) { // check for empty line
+			if (row.length == 1 && row[0].isEmpty()) { // check for empty line
 				continue;
 			}
 
